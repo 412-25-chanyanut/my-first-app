@@ -1,3 +1,4 @@
+import time
 import streamlit as st
 
 st.title("🌎 Whatcountry_game")
@@ -7,12 +8,18 @@ for i in range(1, 11):
     if f"ans{i}_val" not in st.session_state:
         st.session_state[f"ans{i}_val"] = ""
 
+if "is_ended" not in st.session_state:
+    st.session_state.is_ended = False
 
+
+# ----------------------------------------------------
 # 2. ฟังก์ชันเริ่มเกมใหม่
+# ----------------------------------------------------
 def reset_game():
     for i in range(1, 11):
         st.session_state[f"ans{i}_val"] = ""
 
+    st.session_state.start = time.time()
     st.session_state.is_ended = False
 
 
@@ -22,10 +29,8 @@ def reset_game():
 @st.dialog("📊 สรุปผลการเล่นเกม")
 def show_result_dialog(answers):
 
-    st.balloons()
     score = 0
 
-    # คำตอบที่ถูกต้อง
     correct_answers = [
         "Japan",
         "Korea",
@@ -39,7 +44,7 @@ def show_result_dialog(answers):
         "Turkey"
     ]
 
-    # ตรวจคำตอบทั้ง 10 ข้อ
+    # ตรวจคำตอบ
     for i in range(10):
 
         user_answer = answers[i].strip().lower()
@@ -59,14 +64,15 @@ def show_result_dialog(answers):
 
             st.error(
                 f"❌ ข้อ {i+1}: ผิด\n\n"
-                f"คำตอบของคุณ: {answers[i] if answers[i] else 'ไม่ได้ตอบ'}\n\n"
+                f"คำตอบของคุณ: "
+                f"{answers[i] if answers[i] else 'ไม่ได้ตอบ'}\n\n"
                 f"คำตอบที่ถูกต้อง: {correct_answers[i]}"
             )
 
     # แสดงคะแนน
     st.info(f"🏆 ได้คะแนนรวม: {score}/10 คะแนน")
 
-    # แสดงผลตามช่วงคะแนน
+    # แสดงผลตามคะแนน
     if score <= 3:
         st.error("🚨 Try Again")
 
@@ -78,15 +84,31 @@ def show_result_dialog(answers):
 
 
 # ----------------------------------------------------
-# 4. ปุ่มเริ่มเกมใหม่
+# 4. ปุ่มเริ่มเกม
 # ----------------------------------------------------
-st.button("🎮 เริ่มเกมใหม่", on_click=reset_game)
+st.button("🎮 เริ่มเกม", on_click=reset_game)
+
+
+# ----------------------------------------------------
+# 5. แสดงเวลานับถอยหลัง 1 นาที
+# ----------------------------------------------------
+if "start" in st.session_state and not st.session_state.is_ended:
+
+    time_left = int(60 - (time.time() - st.session_state.start))
+
+    if time_left > 0:
+        st.warning(f"⏳ เหลือเวลา: {time_left} วินาที")
+
+    else:
+        st.session_state.is_ended = True
+        st.rerun()
+
 
 st.divider()
 
 
 # ----------------------------------------------------
-# 5. คำถามภาษาไทย
+# 6. คำถามภาษาไทย
 # ----------------------------------------------------
 questions = [
     "ข้อ 1: ญี่ปุ่น ",
@@ -103,7 +125,7 @@ questions = [
 
 
 # ----------------------------------------------------
-# 6. ช่องกรอกคำตอบ
+# 7. ช่องกรอกคำตอบ
 # ----------------------------------------------------
 answers = []
 
@@ -120,10 +142,23 @@ for i in range(10):
 
 
 # ----------------------------------------------------
-# 7. ปุ่มส่งคำตอบ
+# 8. ปุ่มส่งคำตอบ
 # ----------------------------------------------------
-if st.button("📥 ส่งคำตอบ"):
+if "start" in st.session_state and not st.session_state.is_ended:
 
-    st.session_state.is_ended = True
+    if st.button("📥 ส่งคำตอบ"):
+
+        st.session_state.is_ended = True
+        st.rerun()
+
+    # อัปเดตเวลาทุก 1 วินาที
+    time.sleep(1)
+    st.rerun()
+
+
+# ----------------------------------------------------
+# 9. แสดงผลลัพธ์
+# ----------------------------------------------------
+if st.session_state.is_ended:
 
     show_result_dialog(answers)
