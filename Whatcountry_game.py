@@ -27,31 +27,40 @@ def show_result_dialog(answers):
 
     # คำตอบที่ถูกต้อง
     correct_answers = [
-        "japan",
-        "korea",
-        "spain",
-        "brazil",
-        "china",
-        "france",
-        "canada",
-        "italy",
-        "philippines",
-        "turkey"
+        "Japan",
+        "Korea",
+        "Spain",
+        "Brazil",
+        "China",
+        "France",
+        "Canada",
+        "Italy",
+        "Philippines",
+        "Turkey"
     ]
 
     # ตรวจคำตอบทั้ง 10 ข้อ
     for i in range(10):
 
         user_answer = answers[i].strip().lower()
+        correct_answer = correct_answers[i].lower()
 
-        if user_answer == correct_answers[i]:
-            st.success(f"✅ ข้อ {i+1}: ถูกต้อง")
+        if user_answer == correct_answer:
+
+            st.success(
+                f"✅ ข้อ {i+1}: ถูกต้อง\n\n"
+                f"คำตอบของคุณ: {answers[i]}\n\n"
+                f"คำตอบที่ถูกต้อง: {correct_answers[i]}"
+            )
+
             score += 1
 
         else:
+
             st.error(
-                f"❌ ข้อ {i+1}: ผิด "
-                f"(คุณตอบ '{answers[i]}')"
+                f"❌ ข้อ {i+1}: ผิด\n\n"
+                f"คำตอบของคุณ: {answers[i] if answers[i] else 'ไม่ได้ตอบ'}\n\n"
+                f"คำตอบที่ถูกต้อง: {correct_answers[i]}"
             )
 
     # แสดงคะแนน
@@ -80,16 +89,16 @@ st.divider()
 # 5. คำถามภาษาไทย
 # ----------------------------------------------------
 questions = [
-    "ข้อ 1: ญี่ปุ่น 🇯🇵",
-    "ข้อ 2: เกาหลี 🇰🇷",
-    "ข้อ 3: สเปน 🇪🇸",
-    "ข้อ 4: บราซิล 🇧🇷",
-    "ข้อ 5: จีน 🇨🇳",
-    "ข้อ 6: ฝรั่งเศส 🇫🇷",
-    "ข้อ 7: แคนาดา 🇨🇦",
-    "ข้อ 8: อิตาลี 🇮🇹",
-    "ข้อ 9: ฟิลิปปินส์ 🇵🇭",
-    "ข้อ 10: ตุรกี 🇹🇷"
+    "ข้อ 1: ญี่ปุ่น ",
+    "ข้อ 2: เกาหลี ",
+    "ข้อ 3: สเปน ",
+    "ข้อ 4: บราซิล ",
+    "ข้อ 5: จีน ",
+    "ข้อ 6: ฝรั่งเศส ",
+    "ข้อ 7: แคนาดา ",
+    "ข้อ 8: อิตาลี ",
+    "ข้อ 9: ฟิลิปปินส์ ",
+    "ข้อ 10: ตุรกี "
 ]
 
 
